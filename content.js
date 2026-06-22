@@ -99,6 +99,21 @@
         shadow.appendChild(backdrop);
     }
 
+    // Build a URL into the browser's cached-favicon service for a page. This is
+    // served from cache by the extension, so it never hits the network and
+    // cannot trigger the Local Network Access permission prompt.
+    function faviconUrl(pageUrl) {
+        if (!pageUrl) return '';
+        try {
+            const url = new URL(chrome.runtime.getURL('/_favicon/'));
+            url.searchParams.set('pageUrl', pageUrl);
+            url.searchParams.set('size', '32');
+            return url.toString();
+        } catch (e) {
+            return '';
+        }
+    }
+
     function render() {
         grid.innerHTML = '';
         tabs.forEach((tab, i) => {
@@ -108,9 +123,14 @@
             const icon = document.createElement('div');
             icon.className = 'icon';
             const fallback = (tab.title || tab.url || '?').trim().charAt(0).toUpperCase() || '?';
-            if (tab.favIconUrl) {
+            // Load favicons from the browser's cache via the _favicon API rather
+            // than fetching them live. Fetching a tab's favicon directly (e.g. a
+            // localhost dev server) would issue a local-network request and
+            // trigger the "Access other apps and services on this device" prompt.
+            const faviconSrc = faviconUrl(tab.url);
+            if (faviconSrc) {
                 const img = document.createElement('img');
-                img.src = tab.favIconUrl;
+                img.src = faviconSrc;
                 img.alt = '';
                 img.addEventListener('error', () => { icon.textContent = fallback; });
                 icon.appendChild(img);

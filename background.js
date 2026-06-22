@@ -65,10 +65,11 @@ async function buildTabList() {
     // Append any tabs not yet seen in the MRU list (e.g. freshly created).
     for (const t of byId.values()) ordered.push(t);
 
+    // Favicons are resolved in the content script via the cached _favicon API
+    // (using url), so we don't pass favIconUrl here.
     return ordered.map((t) => ({
         id: t.id,
         title: t.title || t.url || 'Tab',
-        favIconUrl: t.favIconUrl || '',
         url: t.url || ''
     }));
 }

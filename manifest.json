@@ -1,11 +1,12 @@
 {
     "manifest_version": 3,
     "name": "Tab Switcher",
-    "version": "1.1",
+    "version": "1.2",
     "description": "Alt+Q overlay to switch between open tabs, Windows Alt-Tab style",
     "permissions": [
         "tabs",
-        "storage"
+        "storage",
+        "favicon"
     ],
     "commands": {
         "switchTab": {
@@ -24,6 +25,12 @@
             "matches": ["<all_urls>"],
             "js": ["content.js"],
             "run_at": "document_idle"
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["_favicon/*"],
+            "matches": ["<all_urls>"]
         }
     ]
 }

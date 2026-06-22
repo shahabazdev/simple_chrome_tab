@@ -1,21 +1,29 @@
 {
     "manifest_version": 3,
     "name": "Tab Switcher",
-    "version": "1.0",
-    "description": "Switches to the previously active tab",
+    "version": "1.1",
+    "description": "Alt+Q overlay to switch between open tabs, Windows Alt-Tab style",
     "permissions": [
-        "tabs"
+        "tabs",
+        "storage"
     ],
     "commands": {
         "switchTab": {
             "suggested_key": {
-                "default": "Ctrl+Shift+S",
-                "mac": "MacCtrl+Shift+S"
+                "default": "Alt+Q",
+                "mac": "Alt+Q"
             },
-            "description": "Switches to the previously active tab"
+            "description": "Show the tab switcher overlay (hold Alt, tap Q to cycle, release Alt to switch)"
         }
     },
     "background": {
         "service_worker": "background.js"
-    }
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"],
+            "run_at": "document_idle"
+        }
+    ]
 }
